@@ -144,13 +144,15 @@ def view_seats(train_number):
         "SELECT * FROM trains WHERE train_number = ?", (train_number,))
     train_data = train_query.fetchone()
    if train_data:
-    seat_query = c.execute(
+        seat_query = c.execute(
         f'''SELECT 'Number : ' || seat_number, '\n Type : '  || seat_type ,'\n Name : ' ||  passenger_name , '\n Age : ' || passenger_age ,'\n Gender : ' ||  passenger_gender as Details, booked  FROM seats_{train_number} ORDER BY seat_number asc''')
     result = seat_query.fetchall()
     if result:
         st.dataframe(pd.DataFrame(result, columns=['Seat Number', 'Seat Type', 'Passenger Name', 'Passenger Age', 'Passenger Gender', 'Booked']))
     else:
         st.error(f"No available seats for train {train_number}.")
+       
+   
 else:
     st.error(f"No such Train with Number {train_number} is available")
 
