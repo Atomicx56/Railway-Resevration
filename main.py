@@ -9,9 +9,6 @@ c = conn.cursor()
 # Create required tables if not available
 def create_DB_if_Not_available():
     """Creates necessary database tables if they don't exist."""
-    # Drop users table if it already exists to add role column
-    c.execute("DROP TABLE IF EXISTS users")
-    
     c.execute('''CREATE TABLE IF NOT EXISTS users
                (username TEXT PRIMARY KEY, password TEXT, role TEXT)''')
     c.execute('''CREATE TABLE IF NOT EXISTS trains
@@ -99,8 +96,6 @@ def signup(username, password, role):
         c.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (username, password, role))
         conn.commit()
         st.success("Successfully signed up!")
-    except sqlite3.IntegrityError:
-        st.error("Username already exists. Please choose a different username.")
     except sqlite3.Error as e:
         st.error(f"Error signing up user: {e}")
 
@@ -122,6 +117,7 @@ def enhanced_customer_options():
     """Improved customer panel options."""
     st.header("Customer Panel")
     customer_choice = st.selectbox("Customer Options", ["Book Ticket", "Cancel Ticket", "View Trains", "Logout"])
+    
     if customer_choice == "Book Ticket":
         book_ticket_ui()
     elif customer_choice == "Cancel Ticket":
@@ -142,6 +138,7 @@ def admin_options():
     """Admin panel for managing trains."""
     st.header("Admin Panel")
     admin_choice = st.selectbox("Admin Options", ["Add Train", "Delete Train", "View Trains", "Logout"])
+    
     if admin_choice == "Add Train":
         with st.form("add_train_form"):
             train_number = st.text_input("Train Number")
@@ -206,6 +203,9 @@ def main():
 if __name__ == "__main__":
     create_DB_if_Not_available()
     main()
+
+# Close the connection after all operations are done
+
 
 # Close the connection after all operations are done
 conn.close()
