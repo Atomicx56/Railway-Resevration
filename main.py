@@ -150,15 +150,25 @@ def view_seats(train_number):
     train_data = train_query.fetchone()
 
     if train_data:
-       seat_query = c.execute(
-    f'''SELECT 'Number: ' || seat_number AS Seat_Number,
-             '\n Type: ' || seat_type AS Seat_Type,
-             '\n Name: ' || passenger_name AS Passenger_Name,
-             '\n Age: ' || passenger_age AS Passenger_Age,
-             '\n Gender: ' || passenger_gender AS Passenger_Gender,
-             booked
-      FROM seats_{train_number}
-      ORDER BY seat_number ASC'''
+        seat_query = c.execute(
+            f'''SELECT 'Number: ' || seat_number AS Seat_Number,
+                 '\n Type: ' || seat_type AS Seat_Type,
+                 '\n Name: ' || passenger_name AS Passenger_Name,
+                 '\n Age: ' || passenger_age AS Passenger_Age,
+                 '\n Gender: ' || passenger_gender AS Passenger_Gender,
+                 booked
+          FROM seats_{train_number}
+          ORDER BY seat_number ASC'''
+        )
+        result = seat_query.fetchall()
+
+        # This line should be indented at the same level as the code below if there are results
+        if result:
+            st.dataframe(pd.DataFrame(result, columns=['Seat Number', 'Seat Type', 'Passenger Name', 'Passenger Age', 'Passenger Gender', 'Booked']))
+        else:
+            st.error(f"No available seats for train {train_number}.")
+    else:
+        st.error(f"No such Train with Number {train_number} is available")
 )
         if result:
             st.dataframe(pd.DataFrame(result, columns=['Seat Number', 'Seat Type', 'Passenger Name', 'Passenger Age', 'Passenger Gender', 'Booked']))
