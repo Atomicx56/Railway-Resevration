@@ -8,7 +8,7 @@ c = conn.cursor()
 
 # Create required tables if not available
 def create_DB_if_Not_available():
-    """Creates necessary database tables if they don't exist and ensures correct schema."""
+    """Creates necessary database tables if they don't exist."""
     c.execute('''CREATE TABLE IF NOT EXISTS users
                (username TEXT PRIMARY KEY, password TEXT, role TEXT)''')
     c.execute('''CREATE TABLE IF NOT EXISTS trains
@@ -16,17 +16,6 @@ def create_DB_if_Not_available():
     c.execute('''CREATE TABLE IF NOT EXISTS seats
                (train_number TEXT, seat_number INTEGER, seat_type TEXT, booked INTEGER, passenger_name TEXT, passenger_age INTEGER, passenger_gender TEXT, FOREIGN KEY (train_number) REFERENCES trains(train_number))''')
     conn.commit()
-    
-    # Alter table if needed
-    alter_user_table()  # Ensures the role column is present
-
-def alter_user_table():
-    """Adds the 'role' column to the users table if it doesn't exist."""
-    c.execute("PRAGMA table_info(users)")
-    columns = [col[1] for col in c.fetchall()]
-    if "role" not in columns:
-        c.execute("ALTER TABLE users ADD COLUMN role TEXT")
-        conn.commit()
 
 # Function to add new train
 def add_train(train_number, train_name, departure_date, starting_destination, ending_destination):
@@ -137,6 +126,29 @@ def enhanced_customer_options():
     elif customer_choice == "Logout":
         logout()
 
+# Function to book ticket UI
+def book_ticket_ui():
+    """UI for booking a ticket."""
+    st.header("Book Ticket")
+    train_number = st.text_input("Train Number")
+    passenger_name = st.text_input("Passenger Name")
+    passenger_age = st.number_input("Passenger Age", min_value=0)
+    passenger_gender = st.selectbox("Passenger Gender", ["Male", "Female", "Other"])
+    seat_type = st.selectbox("Seat Type", ["Window", "Aisle", "Middle"])
+    
+    if st.button("Book Ticket"):
+        book_ticket(train_number, passenger_name, passenger_age, passenger_gender, seat_type)
+
+# Function to cancel ticket UI
+def cancel_ticket_ui():
+    """UI for canceling a ticket."""
+    st.header("Cancel Ticket")
+    train_number = st.text_input("Train Number")
+    seat_number = st.number_input("Seat Number", min_value=1)
+    
+    if st.button("Cancel Ticket"):
+        cancel_ticket(train_number, seat_number)
+
 # View all trains function
 def view_trains():
     """Displays all available trains."""
@@ -195,7 +207,7 @@ def main():
             else:
                 st.sidebar.error("Invalid credentials. Please try again.")
     elif choice == "Sign Up":
-        username = st.sidebar.text_input("Username")
+                username = st.sidebar.text_input("Username")
         password = st.sidebar.text_input("Password", type="password")
         role = st.sidebar.selectbox("Role", ["customer", "admin"])
         if st.sidebar.button("Sign Up"):
@@ -207,7 +219,7 @@ def main():
         if st.session_state['role'] == "admin":
             admin_options()
         else:
-                        enhanced_customer_options()
+            enhanced_customer_options()
 
 if __name__ == "__main__":
     create_DB_if_Not_available()
@@ -216,3 +228,4 @@ if __name__ == "__main__":
 # Close the connection after all operations are done
 conn.close()
 
+      
