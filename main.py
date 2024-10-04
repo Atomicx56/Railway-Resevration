@@ -169,7 +169,7 @@ def view_seats(train_number):
             st.error(f"No available seats for train {train_number}.")
     else:
         st.error(f"No such Train with Number {train_number} is available")
-)
+
         if result:
             st.dataframe(pd.DataFrame(result, columns=['Seat Number', 'Seat Type', 'Passenger Name', 'Passenger Age', 'Passenger Gender', 'Booked']))
         else:
