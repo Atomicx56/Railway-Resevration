@@ -196,30 +196,30 @@ def main():
         st.session_state['role'] = None
 
     if choice == "Login":
-        username = st.sidebar.text_input("Username")
-        password = st.sidebar.text_input("Password", type="password")
-        if st.sidebar.button("Login"):
-            user_data = login(username, password)
-            if user_data:
-                st.session_state['user'] = username
-                st.session_state['role'] = user_data[2]  # Role (customer or admin)
-                st.sidebar.success(f"Logged in as {username}")
-            else:
-                st.sidebar.error("Invalid credentials. Please try again.")
-      elif choice == "Sign Up":
-        username = st.sidebar.text_input("Username")
-        password = st.sidebar.text_input("Password", type="password")
-        role = st.sidebar.selectbox("Role", ["customer", "admin"])
-        if st.sidebar.button("Sign Up"):
-            signup(username, password, role)
-
-    if st.session_state['user']:
-        st.sidebar.title(f"Logged in as {st.session_state['user']}")
-        st.sidebar.button("Logout", on_click=logout)
-        if st.session_state['role'] == "admin":
-            admin_options()
+    username = st.sidebar.text_input("Username")
+    password = st.sidebar.text_input("Password", type="password")
+    if st.sidebar.button("Login"):
+        user_data = login(username, password)
+        if user_data:
+            st.session_state['user'] = username
+            st.session_state['role'] = user_data[2]  # Role (customer or admin)
+            st.sidebar.success(f"Logged in as {username}")
         else:
-            enhanced_customer_options()
+            st.sidebar.error("Invalid credentials. Please try again.")
+elif choice == "Sign Up":
+    username = st.sidebar.text_input("Username")
+    password = st.sidebar.text_input("Password", type="password")
+    role = st.sidebar.selectbox("Role", ["customer", "admin"])
+    if st.sidebar.button("Sign Up"):
+        signup(username, password, role)
+
+if st.session_state['user']:
+    st.sidebar.title(f"Logged in as {st.session_state['user']}")
+    st.sidebar.button("Logout", on_click=logout)
+    if st.session_state['role'] == "admin":
+        admin_options()
+    else:
+        enhanced_customer_options()
 
 if __name__ == "__main__":
     create_DB_if_Not_available()
@@ -227,5 +227,3 @@ if __name__ == "__main__":
 
 # Close the connection after all operations are done
 conn.close()
-
-      
