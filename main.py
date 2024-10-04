@@ -122,7 +122,7 @@ def cancel_tickets(train_number, seat_number):
             f'''UPDATE seats_{train_number} SET booked=0, passenger_name='', passenger_age='', passenger_gender='' WHERE seat_number=?''', (seat_number,))
         conn.commit()
         st.success(
-            f"Successfully canceled seat {seat_number} from {train_number} .")
+            f"Successfully canceled seat {seat_number} from {train_number}.")
     else:
         st.error(f"No such Train with Number {train_number} is available")
 
@@ -162,14 +162,6 @@ def view_seats(train_number):
         )
         result = seat_query.fetchall()
 
-        # This line should be indented at the same level as the code below if there are results
-        if result:
-            st.dataframe(pd.DataFrame(result, columns=['Seat Number', 'Seat Type', 'Passenger Name', 'Passenger Age', 'Passenger Gender', 'Booked']))
-        else:
-            st.error(f"No available seats for train {train_number}.")
-    else:
-        st.error(f"No such Train with Number {train_number} is available")
-
         if result:
             st.dataframe(pd.DataFrame(result, columns=['Seat Number', 'Seat Type', 'Passenger Name', 'Passenger Age', 'Passenger Gender', 'Booked']))
         else:
@@ -198,7 +190,6 @@ def train_functions():
                 add_train(train_number, train_name, departure_date,
                           starting_destination, ending_destination)
                 st.success("Train Added Successfully!")
-    # ... (previous code)
 
     elif functions == "View Trains":
         st.title("View All Trains")
@@ -231,8 +222,7 @@ def train_functions():
                     st.table(pd.DataFrame([train_data], columns=[
                         "Train Number", "Train Name", "Departure Date", "Starting Destination", "Ending Destination"]))
                 else:
-                    st.error(
-                        f"No train found with the train number: {train_number}")
+                    st.error(f"No train found with the train number: {train_number}")
 
         if st.button("Search by Destinations"):
             if starting_destination and ending_destination:
@@ -240,12 +230,10 @@ def train_functions():
                     starting_destination, ending_destination)
                 if train_data:
                     st.header("Search Results:")
-                    df = pd.DataFrame(train_data, columns=[
-                        "Train Number", "Train Name", "Departure Date", "Starting Destination", "Ending Destination"])
+                    df = pd.DataFrame(train_data, columns=[ "Train Number", "Train Name", "Departure Date", "Starting Destination", "Ending Destination"   ])
                     st.table(df)
                 else:
-                    st.error(
-                        f"No trains found for the given source and destination.")
+                    st.error(f"No trains found for the given source and destination.")
 
     elif functions == "Delete Train":
         st.title("Delete Train")
@@ -256,6 +244,9 @@ def train_functions():
             if train_number:
                 c.execute(f"DROP TABLE IF EXISTS seats_{train_number}")
                 delete_train(train_number, departure_date)
+                st.success(f"Train {train_number} on {departure_date} deleted successfully.")
+            else:
+                st.error("Please enter the train number and departure date to delete.")
 
     elif functions == "Book Ticket":
         st.title("Book Train Ticket")
@@ -271,6 +262,8 @@ def train_functions():
             if train_number and passenger_name and passenger_age and passenger_gender:
                 book_ticket(train_number, passenger_name,
                             passenger_age, passenger_gender, seat_type)
+            else:
+                st.error("Please fill all the details to book a ticket.")
 
     elif functions == "Cancel Ticket":
         st.title("Cancel Ticket")
@@ -280,6 +273,8 @@ def train_functions():
         if st.button("Cancel Ticket"):
             if train_number and seat_number:
                 cancel_tickets(train_number, seat_number)
+            else:
+                st.error("Please enter both train number and seat number to cancel the ticket.")
 
     elif functions == "View Seats":
         st.title("View Seats")
@@ -288,6 +283,12 @@ def train_functions():
         if st.button("Submit"):
             if train_number:
                 view_seats(train_number)
+            else:
+                st.error("Please enter a train number to view the seats.")
 
+# Run the train functions logic
 train_functions()
-conn.close()            
+
+# Close the connection after all operations are done
+conn.close()
+
