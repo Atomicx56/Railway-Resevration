@@ -150,10 +150,16 @@ def view_seats(train_number):
     train_data = train_query.fetchone()
 
     if train_data:
-        seat_query = c.execute(
-            f'''SELECT 'Number : ' || seat_number, '\n Type : '  || seat_type ,'\n Name : ' ||  passenger_name , '\n Age : ' || passenger_age ,'\n Gender : ' ||  passenger_gender as Details, booked  FROM seats_{train_number} ORDER BY seat_number asc''')
-        result = seat_query.fetchall()
-
+       seat_query = c.execute(
+    f'''SELECT 'Number: ' || seat_number AS Seat_Number,
+             '\n Type: ' || seat_type AS Seat_Type,
+             '\n Name: ' || passenger_name AS Passenger_Name,
+             '\n Age: ' || passenger_age AS Passenger_Age,
+             '\n Gender: ' || passenger_gender AS Passenger_Gender,
+             booked
+      FROM seats_{train_number}
+      ORDER BY seat_number ASC'''
+)
         if result:
             st.dataframe(pd.DataFrame(result, columns=['Seat Number', 'Seat Type', 'Passenger Name', 'Passenger Age', 'Passenger Gender', 'Booked']))
         else:
