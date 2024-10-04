@@ -9,6 +9,9 @@ c = conn.cursor()
 # Create required tables if not available
 def create_DB_if_Not_available():
     """Creates necessary database tables if they don't exist."""
+    # Drop users table if it already exists to add role column
+    c.execute("DROP TABLE IF EXISTS users")
+    
     c.execute('''CREATE TABLE IF NOT EXISTS users
                (username TEXT PRIMARY KEY, password TEXT, role TEXT)''')
     c.execute('''CREATE TABLE IF NOT EXISTS trains
