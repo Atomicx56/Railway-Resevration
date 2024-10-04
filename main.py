@@ -30,14 +30,16 @@ create_DB_if_Not_available()
 # Sign Up function
 def signup(username, password, role):
     """Allows users to sign up with a username, password, and role."""
-    c.execute("SELECT * FROM users WHERE username = ?", (username,))
-    result = c.fetchone()
-    if result:
-        st.sidebar.error("Username already exists. Please try a different one.")
-    else:
-        c.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (username, password, role))
-        conn.commit()
-        st.sidebar.success("Sign up successful! You can log in now.")
+    with sqlite3.connect('railway_system.db') as conn:
+        c = conn.cursor()
+        c.execute("SELECT * FROM users WHERE username = ?", (username,))
+        result = c.fetchone()
+        if result:
+            st.sidebar.error("Username already exists. Please try a different one.")
+        else:
+            c.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (username, password, role))
+            conn.commit()  # Commit changes
+            st.sidebar.success("Sign up successful! You can log in now.")
 
 # Login function
 def login(username, password):
