@@ -208,8 +208,8 @@ def main():
                 st.sidebar.error("Invalid credentials. Please try again.")
     elif choice == "Sign Up":
                 username = st.sidebar.text_input("Username")
-        password = st.sidebar.text_input("Password", type="password")
-        role = st.sidebar.selectbox("Role", ["customer", "admin"])
+                password = st.sidebar.text_input("Password", type="password")
+                role = st.sidebar.selectbox("Role", ["customer", "admin"])
         if st.sidebar.button("Sign Up"):
             signup(username, password, role)
 
