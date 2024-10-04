@@ -91,10 +91,17 @@ def view_seats(train_number):
 
 # Signup function
 def signup(username, password, role):
-    """Signs up a new user."""
-    c.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (username, password, role))
-    conn.commit()
-    st.success("Signup successful! You can now log in.")
+    """Signs up a new user to the system."""
+
+    try:
+        # Connect to the database (if not already connected)
+        # ... (connection code if needed)
+
+        c.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (username, password, role))
+        conn.commit()
+        st.success("Successfully signed up!")
+    except sqlite3.Error as e:
+        st.error(f"Error signing up user: {e}")
 
 # Login function
 def login(username, password):
