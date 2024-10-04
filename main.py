@@ -96,6 +96,8 @@ def signup(username, password, role):
         c.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (username, password, role))
         conn.commit()
         st.success("Successfully signed up!")
+    except sqlite3.IntegrityError:
+        st.error("Username already exists. Please choose a different username.")
     except sqlite3.Error as e:
         st.error(f"Error signing up user: {e}")
 
