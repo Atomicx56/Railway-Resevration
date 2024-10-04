@@ -8,7 +8,7 @@ c = conn.cursor()
 
 # Create required tables if not available
 def create_DB_if_Not_available():
-    """Creates necessary database tables if they don't exist."""
+    """Creates necessary database tables if they don't exist and ensures correct schema."""
     c.execute('''CREATE TABLE IF NOT EXISTS users
                (username TEXT PRIMARY KEY, password TEXT, role TEXT)''')
     c.execute('''CREATE TABLE IF NOT EXISTS trains
@@ -16,6 +16,17 @@ def create_DB_if_Not_available():
     c.execute('''CREATE TABLE IF NOT EXISTS seats
                (train_number TEXT, seat_number INTEGER, seat_type TEXT, booked INTEGER, passenger_name TEXT, passenger_age INTEGER, passenger_gender TEXT, FOREIGN KEY (train_number) REFERENCES trains(train_number))''')
     conn.commit()
+    
+    # Alter table if needed
+    alter_user_table()  # Ensures the role column is present
+
+def alter_user_table():
+    """Adds the 'role' column to the users table if it doesn't exist."""
+    c.execute("PRAGMA table_info(users)")
+    columns = [col[1] for col in c.fetchall()]
+    if "role" not in columns:
+        c.execute("ALTER TABLE users ADD COLUMN role TEXT")
+        conn.commit()
 
 # Function to add new train
 def add_train(train_number, train_name, departure_date, starting_destination, ending_destination):
@@ -92,11 +103,7 @@ def view_seats(train_number):
 # Signup function
 def signup(username, password, role):
     """Signs up a new user to the system."""
-
     try:
-        # Connect to the database (if not already connected)
-        # ... (connection code if needed)
-
         c.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (username, password, role))
         conn.commit()
         st.success("Successfully signed up!")
@@ -200,7 +207,7 @@ def main():
         if st.session_state['role'] == "admin":
             admin_options()
         else:
-            enhanced_customer_options()
+                        enhanced_customer_options()
 
 if __name__ == "__main__":
     create_DB_if_Not_available()
@@ -208,3 +215,4 @@ if __name__ == "__main__":
 
 # Close the connection after all operations are done
 conn.close()
+
