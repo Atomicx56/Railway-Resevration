@@ -126,29 +126,6 @@ def enhanced_customer_options():
     elif customer_choice == "Logout":
         logout()
 
-# Function to book ticket UI
-def book_ticket_ui():
-    """UI for booking a ticket."""
-    st.header("Book Ticket")
-    train_number = st.text_input("Train Number")
-    passenger_name = st.text_input("Passenger Name")
-    passenger_age = st.number_input("Passenger Age", min_value=0)
-    passenger_gender = st.selectbox("Passenger Gender", ["Male", "Female", "Other"])
-    seat_type = st.selectbox("Seat Type", ["Window", "Aisle", "Middle"])
-    
-    if st.button("Book Ticket"):
-        book_ticket(train_number, passenger_name, passenger_age, passenger_gender, seat_type)
-
-# Function to cancel ticket UI
-def cancel_ticket_ui():
-    """UI for canceling a ticket."""
-    st.header("Cancel Ticket")
-    train_number = st.text_input("Train Number")
-    seat_number = st.number_input("Seat Number", min_value=1)
-    
-    if st.button("Cancel Ticket"):
-        cancel_ticket(train_number, seat_number)
-
 # View all trains function
 def view_trains():
     """Displays all available trains."""
@@ -196,30 +173,30 @@ def main():
         st.session_state['role'] = None
 
     if choice == "Login":
-    username = st.sidebar.text_input("Username")
-    password = st.sidebar.text_input("Password", type="password")
-    if st.sidebar.button("Login"):
-        user_data = login(username, password)
-        if user_data:
-            st.session_state['user'] = username
-            st.session_state['role'] = user_data[2]  # Role (customer or admin)
-            st.sidebar.success(f"Logged in as {username}")
-        else:
-            st.sidebar.error("Invalid credentials. Please try again.")
-elif choice == "Sign Up":
-    username = st.sidebar.text_input("Username")
-    password = st.sidebar.text_input("Password", type="password")
-    role = st.sidebar.selectbox("Role", ["customer", "admin"])
-    if st.sidebar.button("Sign Up"):
-        signup(username, password, role)
+        username = st.sidebar.text_input("Username")
+        password = st.sidebar.text_input("Password", type="password")
+        if st.sidebar.button("Login"):
+            user_data = login(username, password)
+            if user_data:
+                st.session_state['user'] = username
+                st.session_state['role'] = user_data[2]  # Role (customer or admin)
+                st.sidebar.success(f"Logged in as {username}")
+            else:
+                st.sidebar.error("Invalid credentials. Please try again.")
+    elif choice == "Sign Up":
+        username = st.sidebar.text_input("Username")
+        password = st.sidebar.text_input("Password", type="password")
+        role = st.sidebar.selectbox("Role", ["customer", "admin"])
+        if st.sidebar.button("Sign Up"):
+            signup(username, password, role)
 
-if st.session_state['user']:
-    st.sidebar.title(f"Logged in as {st.session_state['user']}")
-    st.sidebar.button("Logout", on_click=logout)
-    if st.session_state['role'] == "admin":
-        admin_options()
-    else:
-        enhanced_customer_options()
+    if st.session_state['user']:
+        st.sidebar.title(f"Logged in as {st.session_state['user']}")
+        st.sidebar.button("Logout", on_click=logout)
+        if st.session_state['role'] == "admin":
+            admin_options()
+        else:
+            enhanced_customer_options()
 
 if __name__ == "__main__":
     create_DB_if_Not_available()
